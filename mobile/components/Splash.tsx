@@ -3,7 +3,7 @@ import { View, Text, Animated, Easing } from 'react-native'
 import { Image } from 'expo-image'
 import { font } from '@/lib/theme'
 
-const LOGO = 'https://www.poyrazmobilya.com/assets/logo.png'
+const LOGO = require('@/assets/logo.png')
 
 export default function Splash() {
   const fade = useRef(new Animated.Value(0)).current
@@ -22,7 +22,7 @@ export default function Splash() {
   return (
     <View style={{ flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' }}>
       <Animated.View style={{ opacity: fade, alignItems: 'center', gap: 22 }}>
-        <Image source={{ uri: LOGO }} style={{ width: 210, height: 78 }} contentFit="contain" />
+        <Image source={LOGO} style={{ width: 210, height: 78 }} contentFit="contain" />
         <Text style={{ fontFamily: font.sans, fontSize: 11.5, letterSpacing: 2.5, color: '#5C6E8C' }}>
           TASARIM BİZİM İŞİMİZ
         </Text>

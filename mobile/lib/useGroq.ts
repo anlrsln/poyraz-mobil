@@ -5,13 +5,15 @@ import { sanity } from './sanity'
 export function useGroq<T>(query: string, params?: Record<string, unknown>) {
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<Error | null>(null)
 
   const key = JSON.stringify(params ?? {})
 
   const load = useCallback(
-    async (silent = false) => {
-      if (!silent) setLoading(true)
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true)
+      else setLoading(true)
       try {
         const res = await sanity.fetch<T>(query, params ?? {})
         setData(res)
@@ -20,6 +22,7 @@ export function useGroq<T>(query: string, params?: Record<string, unknown>) {
         setError(e as Error)
       } finally {
         setLoading(false)
+        setRefreshing(false)
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,5 +33,5 @@ export function useGroq<T>(query: string, params?: Record<string, unknown>) {
     load()
   }, [load])
 
-  return { data, loading, error, refresh: () => load(true) }
+  return { data, loading, refreshing, error, refresh: () => load(true) }
 }

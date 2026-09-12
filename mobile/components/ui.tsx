@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, ActivityIndicator, StyleSheet } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useTheme, font, Theme } from '@/lib/theme'
 import { sized } from '@/lib/sanity'

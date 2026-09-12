@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, Text, ScrollView, Pressable } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import { View, Text, ScrollView, Pressable, Linking } from 'react-native'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'
@@ -11,6 +11,7 @@ import { openWhatsApp, call, mail, maps, PHONE_FALLBACK } from '@/lib/links'
 
 type ContactData = {
   contact?: { address?: string; phone?: string; email?: string; whatsappNumber?: string }
+  settings?: { whatsappNumber?: string; contactPhone?: string; contactEmail?: string }
 }
 
 const SOCIALS: { icon: keyof typeof MaterialIcons.glyphMap; label: string; url: string }[] = [
@@ -24,10 +25,12 @@ export default function Iletisim() {
   const router = useRouter()
   const { data } = useGroq<ContactData>(contactQuery)
   const c = data?.contact
+  const st = data?.settings
 
+  // Şema kuralı: önce iletisimSayfasi, yoksa siteAyarlari
   const address = c?.address || 'Kayseri Organize Sanayi Bölgesi, Kayseri'
-  const phone = c?.phone || PHONE_FALLBACK
-  const email = c?.email || 'poyrazzmobilyaa@gmail.com'
+  const phone = c?.phone || st?.contactPhone || PHONE_FALLBACK
+  const email = c?.email || st?.contactEmail || 'poyrazzmobilyaa@gmail.com'
 
   const rows: { icon: keyof typeof MaterialIcons.glyphMap; label: string; value: string; onPress: () => void }[] = [
     { icon: 'location-on', label: 'ADRES', value: address, onPress: () => maps(address) },
@@ -45,7 +48,7 @@ export default function Iletisim() {
         </Text>
 
         <View style={{ marginTop: 18, gap: 10 }}>
-          <PrimaryButton label="WhatsApp ile Yazın" icon="chat" color={t.whatsapp} onPress={() => openWhatsApp(c?.whatsappNumber)} />
+          <PrimaryButton label="WhatsApp ile Yazın" icon="chat" color={t.whatsapp} onPress={() => openWhatsApp(c?.whatsappNumber || st?.whatsappNumber)} />
           <PrimaryButton label="Hemen Ara" icon="call" onPress={() => call(phone)} />
         </View>
 
@@ -77,7 +80,7 @@ export default function Iletisim() {
           {SOCIALS.map((s) => (
             <Pressable
               key={s.label}
-              onPress={() => require('react-native').Linking.openURL(s.url)}
+              onPress={() => Linking.openURL(s.url)}
               style={{
                 flex: 1,
                 height: 52,

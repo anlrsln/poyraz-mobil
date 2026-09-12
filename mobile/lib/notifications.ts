@@ -14,7 +14,7 @@ import * as Notifications from 'expo-notifications'
 import * as Device from 'expo-device'
 import Constants from 'expo-constants'
 import { router } from 'expo-router'
-import { sanity, duyurularQuery } from './sanity'
+import { sanity, duyuruIdsQuery } from './sanity'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -115,7 +115,7 @@ export function useUnreadCount() {
   const recount = useCallback(async () => {
     try {
       const [ids, read] = await Promise.all([
-        sanity.fetch<{ _id: string }[]>(duyurularQuery),
+        sanity.fetch<{ _id: string }[]>(duyuruIdsQuery),
         getRead(),
       ])
       setCount(ids.filter((d) => !read[d._id]).length)

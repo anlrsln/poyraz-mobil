@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, ScrollView, Pressable, Modal, useWindowDimensions } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme, font } from '@/lib/theme'
@@ -12,18 +12,17 @@ import { Loader, ErrorState, ProductCard, ProductCardData, PrimaryButton } from 
 import { openWhatsApp, call, PHONE_FALLBACK } from '@/lib/links'
 
 type Data = {
-  product?: {
-    _id: string
-    name: string
-    badge?: string
-    pieces?: string
-    pieceNames?: string[]
-    description?: string
-    images?: string[]
-    collection?: { name?: string; slug?: string }
-  }
+  _id: string
+  name: string
+  badge?: string
+  pieces?: string
+  pieceNames?: string[]
+  description?: string
+  images?: string[]
+  collection?: { name?: string; slug?: string }
   related?: ProductCardData[]
   settings?: { whatsappNumber?: string; contactPhone?: string }
+  contact?: { whatsappNumber?: string; phone?: string }
 }
 
 export default function UrunDetay() {
@@ -37,17 +36,15 @@ export default function UrunDetay() {
   const [lightbox, setLightbox] = useState(false)
   const [zoom, setZoom] = useState(1)
 
-  const first = useGroq<Data>(productQuery, { slug, collectionSlug: '\u0000' })
-  const collectionSlug = first.data?.product?.collection?.slug
-  const full = useGroq<Data>(productQuery, { slug, collectionSlug: collectionSlug ?? '\u0000' })
+  const { data: p, loading, refresh } = useGroq<Data>(productQuery, { slug })
 
-  const data = full.data ?? first.data
-  const p = data?.product
   const images = p?.images?.length ? p.images : []
   const current = images[Math.min(index, images.length - 1)]
-  const phone = data?.settings?.contactPhone || PHONE_FALLBACK
+  // Şema kuralı: önce iletisimSayfasi, yoksa siteAyarlari
+  const phone = p?.contact?.phone || p?.settings?.contactPhone || PHONE_FALLBACK
+  const whatsapp = p?.contact?.whatsappNumber || p?.settings?.whatsappNumber
 
-  if (first.loading && !p) {
+  if (loading && !p) {
     return (
       <View style={{ flex: 1, backgroundColor: t.bg }}>
         <AppHeader back />
@@ -60,7 +57,7 @@ export default function UrunDetay() {
     return (
       <View style={{ flex: 1, backgroundColor: t.bg }}>
         <AppHeader back />
-        <ErrorState onRetry={first.refresh} />
+        <ErrorState onRetry={refresh} />
       </View>
     )
   }
@@ -160,7 +157,7 @@ export default function UrunDetay() {
               label="WhatsApp ile Ulaşın"
               icon="chat"
               color={t.whatsapp}
-              onPress={() => openWhatsApp(data?.settings?.whatsappNumber, `Merhaba, ${p.name} ürünü hakkında bilgi almak istiyorum.`)}
+              onPress={() => openWhatsApp(whatsapp, `Merhaba, ${p.name} ürünü hakkında bilgi almak istiyorum.`)}
             />
             <PrimaryButton label={`Ara: ${phone}`} icon="call" outline onPress={() => call(phone)} />
           </View>
@@ -192,7 +189,7 @@ export default function UrunDetay() {
             </Pressable>
           </View>
 
-          {!!data?.related?.length && (
+          {!!p.related?.length && (
             <View style={{ marginTop: 26 }}>
               <Text style={{ fontFamily: font.sansBold, fontSize: 10, letterSpacing: 2, color: t.accent }}>KOLEKSİYONDAN</Text>
               <Text style={{ marginTop: 9, fontFamily: font.serif, fontSize: 20, color: t.ink }}>Bu Koleksiyondan Diğer Ürünler</Text>
@@ -200,9 +197,9 @@ export default function UrunDetay() {
           )}
         </View>
 
-        {!!data?.related?.length && (
+        {!!p.related?.length && (
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingHorizontal: 16 }}>
-            {data.related.map((r) => (
+            {p.related!.map((r) => (
               <ProductCard key={r._id} p={r} width={152} imageHeight={104} />
             ))}
           </ScrollView>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, ScrollView, TextInput, KeyboardAvoidingView, Platform, Pressable } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useTheme, font } from '@/lib/theme'
 import { submitBayilik } from '@/lib/sanity'
 import { AppHeader } from '@/components/AppHeader'

@@ -59,12 +59,13 @@ export const collectionQuery = `*[_type == "koleksiyon" && slug.current == $slug
   "products": *[_type == "urun" && references(^._id)] | order(orderRank asc, name asc) { ${PRODUCT_CARD} }
 }`
 
-/** Ürün detay + aynı koleksiyondan diğerleri */
-export const productQuery = `{
-  "product": *[_type == "urun" && slug.current == $slug][0]{ ${PRODUCT_FULL} },
-  "related": *[_type == "urun" && slug.current != $slug && collection->slug.current == $collectionSlug]
+/** Ürün detay + aynı koleksiyondan diğerleri — tek istek */
+export const productQuery = `*[_type == "urun" && slug.current == $slug][0]{
+  ${PRODUCT_FULL},
+  "related": *[_type == "urun" && slug.current != $slug && collection._ref == ^.collection._ref]
     | order(orderRank asc, name asc)[0...8] { ${PRODUCT_CARD} },
-  "settings": *[_type == "siteAyarlari"][0]{ whatsappNumber, contactPhone }
+  "settings": *[_type == "siteAyarlari"][0]{ whatsappNumber, contactPhone },
+  "contact": *[_type == "iletisimSayfasi"][0]{ whatsappNumber, phone }
 }`
 
 /** Ürün adında arama. $term = kullanıcı girdisi + '*' */
@@ -91,6 +92,9 @@ export const duyurularQuery = `*[_type == "duyuru"] | order(publishedAt desc)[0.
   "productSlug": product->slug.current,
   "collectionSlug": collection->slug.current
 }`
+
+/** Okunmadı sayacı için — yalnızca kimlikler (AppHeader her ekranda çalışıyor) */
+export const duyuruIdsQuery = `*[_type == "duyuru"] | order(publishedAt desc)[0...50]{ _id }`
 
 /** Bayilik başvurusu — mevcut Next.js route'u üzerinden (yazma token'ı sunucuda kalır) */
 export async function submitBayilik(form: {

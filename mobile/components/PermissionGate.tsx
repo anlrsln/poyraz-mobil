@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, Pressable, ScrollView } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme, font } from '@/lib/theme'
 import { registerForPush } from '@/lib/notifications'

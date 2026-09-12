@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, ScrollView, useWindowDimensions } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'
 import { bayilerQuery, sized } from '@/lib/sanity'

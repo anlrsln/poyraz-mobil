@@ -4,14 +4,15 @@ import { StatusBar } from 'expo-status-bar'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import * as SplashScreen from 'expo-splash-screen'
 import { useFonts } from 'expo-font'
-import {
-  Manrope_400Regular,
-  Manrope_500Medium,
-  Manrope_600SemiBold,
-  Manrope_700Bold,
-  Manrope_800ExtraBold,
-} from '@expo-google-fonts/manrope'
-import { PlayfairDisplay_500Medium, PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display'
+// Paket kokunden import edilince Metro tum aile varyantlarini (26 ttf, ~2MB) bundle'a
+// koyuyor; alt yollardan import edilince yalnizca kullanilan 7 font giriyor.
+import { Manrope_400Regular } from '@expo-google-fonts/manrope/400Regular'
+import { Manrope_500Medium } from '@expo-google-fonts/manrope/500Medium'
+import { Manrope_600SemiBold } from '@expo-google-fonts/manrope/600SemiBold'
+import { Manrope_700Bold } from '@expo-google-fonts/manrope/700Bold'
+import { Manrope_800ExtraBold } from '@expo-google-fonts/manrope/800ExtraBold'
+import { PlayfairDisplay_500Medium } from '@expo-google-fonts/playfair-display/500Medium'
+import { PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display/600SemiBold'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ThemeProvider, useTheme } from '@/lib/theme'
 import { useNotificationRouting, hasPushPermission } from '@/lib/notifications'
@@ -27,7 +28,7 @@ function Root() {
   const [phase, setPhase] = useState<'splash' | 'perm' | 'app'>('splash')
   useNotificationRouting()
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Manrope_400Regular,
     Manrope_500Medium,
     Manrope_600SemiBold,
@@ -37,22 +38,25 @@ function Root() {
     PlayfairDisplay_600SemiBold,
   })
 
+  // Font yuklenemezse de devam et: aksi halde uygulama beyaz ekranda kalir
+  const ready = fontsLoaded || !!fontError
+
   useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync()
-  }, [fontsLoaded])
+    if (ready) SplashScreen.hideAsync()
+  }, [ready])
 
   // Splash 2,3 sn; sonra izin ekranı (yalnızca ilk açılışta)
   useEffect(() => {
-    if (!fontsLoaded) return
+    if (!ready) return
     const timer = setTimeout(async () => {
       const asked = await AsyncStorage.getItem(PERM_KEY)
       const granted = await hasPushPermission()
       setPhase(asked || granted ? 'app' : 'perm')
     }, 2300)
     return () => clearTimeout(timer)
-  }, [fontsLoaded])
+  }, [ready])
 
-  if (!fontsLoaded) return null
+  if (!ready) return null
   if (phase === 'splash') return <Splash />
   if (phase === 'perm')
     return (

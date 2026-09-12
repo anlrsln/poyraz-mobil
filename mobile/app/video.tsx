@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, ScrollView, Pressable, Linking } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'
 import { videoQuery, sized } from '@/lib/sanity'

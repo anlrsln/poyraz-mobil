@@ -1,13 +1,13 @@
 import React from 'react'
 import { View, Text, Pressable } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme, font } from '@/lib/theme'
 import { useUnreadCount } from '@/lib/notifications'
 
-const LOGO = 'https://www.poyrazmobilya.com/assets/logo.png'
+const LOGO = require('@/assets/logo.png')
 
 export function AppHeader({ back = false }: { back?: boolean }) {
   const { t, isDark, toggle } = useTheme()
@@ -40,7 +40,7 @@ export function AppHeader({ back = false }: { back?: boolean }) {
       )}
 
       <Image
-        source={{ uri: LOGO }}
+        source={LOGO}
         style={{ width: 150, height: 56 }}
         contentFit="contain"
         tintColor={isDark ? '#FFFFFF' : undefined}

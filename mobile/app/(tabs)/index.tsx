@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, ScrollView, Pressable, useWindowDimensions, RefreshControl } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'
@@ -38,7 +38,7 @@ export default function Home() {
   const { t } = useTheme()
   const router = useRouter()
   const { width } = useWindowDimensions()
-  const { data, loading, error, refresh } = useGroq<HomeData>(homeQuery)
+  const { data, loading, refreshing, error, refresh } = useGroq<HomeData>(homeQuery)
 
   const featured = data?.home?.featuredProducts ?? []
   const collections = data?.collections ?? []
@@ -58,7 +58,7 @@ export default function Home() {
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={refresh} tintColor={t.accent} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={t.accent} />}
         >
           {/* Öne çıkanlar karuseli */}
           <View style={{ paddingHorizontal: 16, paddingTop: 18, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>

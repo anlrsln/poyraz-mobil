@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, ScrollView, Pressable, Switch, Linking } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useTheme, font } from '@/lib/theme'
 import { AppHeader } from '@/components/AppHeader'
 import { hasPushPermission, registerForPush } from '@/lib/notifications'
 
-const LOGO = 'https://www.poyrazmobilya.com/assets/logo.png'
+const LOGO = require('@/assets/logo.png')
 
 export default function DahaFazla() {
   const { t, isDark, toggle } = useTheme()
@@ -23,7 +23,7 @@ export default function DahaFazla() {
     { icon: 'storefront', label: 'Bayiler', hint: 'Bayi medya galerisi', onPress: () => router.push('/bayiler') },
     { icon: 'play-circle-outline', label: 'Video Galeri', hint: 'Poyraz Mobilya dünyasından', onPress: () => router.push('/video') },
     { icon: 'assignment', label: 'Bayilik Başvurusu', hint: 'Bayi ağımıza katılın', onPress: () => router.push('/bayilik') },
-    { icon: 'policy', label: 'Gizlilik Sözleşmesi', hint: 'poyrazmobilya.com', onPress: () => Linking.openURL('https://www.poyrazmobilya.com/gizlilik') },
+    { icon: 'policy', label: 'Gizlilik Sözleşmesi', hint: 'poyrazmobilya.com', onPress: () => Linking.openURL('https://www.poyrazmobilya.com/gizlilik-sozlesmesi') },
     { icon: 'shield', label: 'KVKK', hint: 'Kişisel verilerin korunması', onPress: () => Linking.openURL('https://www.poyrazmobilya.com/kvkk') },
   ]
 
@@ -93,7 +93,7 @@ export default function DahaFazla() {
 
         <View style={{ marginTop: 22, alignItems: 'center', gap: 8 }}>
           <Image
-            source={{ uri: LOGO }}
+            source={LOGO}
             style={{ width: 140, height: 52, opacity: 0.7 }}
             contentFit="contain"
             tintColor={isDark ? '#FFFFFF' : undefined}

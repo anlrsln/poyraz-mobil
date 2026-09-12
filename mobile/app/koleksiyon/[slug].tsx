@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { View, Text, ScrollView, TextInput, Pressable, useWindowDimensions } from 'react-native'
 import { Image } from 'expo-image'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'

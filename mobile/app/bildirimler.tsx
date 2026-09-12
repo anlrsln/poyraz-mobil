@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { View, Text, ScrollView, Pressable, RefreshControl } from 'react-native'
-import { MaterialIcons } from '@expo/vector-icons'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { useRouter } from 'expo-router'
 import { useTheme, font } from '@/lib/theme'
 import { useGroq } from '@/lib/useGroq'
@@ -23,7 +23,7 @@ type Duyuru = {
 export default function Bildirimler() {
   const { t } = useTheme()
   const router = useRouter()
-  const { data, loading, error, refresh } = useGroq<Duyuru[]>(duyurularQuery)
+  const { data, loading, refreshing, error, refresh } = useGroq<Duyuru[]>(duyurularQuery)
   const [read, setRead] = useState<Record<string, true>>({})
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function Bildirimler() {
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ padding: 16, paddingBottom: 30 }}
-          refreshControl={<RefreshControl refreshing={false} onRefresh={refresh} tintColor={t.accent} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={t.accent} />}
         >
           <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
             <Text style={{ fontFamily: font.serif, fontSize: 26, color: t.ink }}>Bildirimler</Text>

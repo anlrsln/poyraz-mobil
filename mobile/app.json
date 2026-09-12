@@ -32,7 +32,7 @@
         {
           "image": "./assets/splash.png",
           "backgroundColor": "#FFFFFF",
-          "imageWidth": 210,
+          "imageWidth": 135,
           "resizeMode": "contain"
         }
       ]
