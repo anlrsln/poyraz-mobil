@@ -174,6 +174,17 @@ Kritik noktalar:
 repo konvansiyonuna uygun şekilde ayrı dosyalara yazıldı ve `index.ts`'e eklendi.
 Mevcut şemalara dokunulmadı. Dal henüz **merge/deploy edilmedi**.
 
+> **Tuzak:** Studio `sanity.config.ts` içinde özel bir `structure` kullanıyor ve
+> sol menü öğelerini **elle sayıyor**. Bir tipi `schemaTypes`'a eklemek onu
+> tanıtır ama menüde göstermez — `structure` içine de
+> `S.documentTypeListItem('...')` eklemek gerekiyor. İlk denemede bu atlandı;
+> `next build` geçtiği için fark edilmedi, Studio'da hiçbir değişiklik
+> görünmedi. Yeni doküman tipi eklerken ikisini birlikte yapın.
+
+Menüye eklenenler: "Duyurular (Push Bildirim)" (ürün bloğundan önce, kendi
+bölümünde) ve "Kayıtlı Cihazlar" (gelen kayıtlarla aynı bölümde — test
+sırasında cihazın token kaydını doğrulamak için).
+
 ```ts
 import { duyuru, pushToken } from './duyuru'
 
