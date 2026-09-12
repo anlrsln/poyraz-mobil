@@ -1,0 +1,35 @@
+# Bağımlılıklar
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Native build çıktıları
+/ios/
+/android/
+
+# Ortam değişkenleri
+.env
+.env.local
+.env.*.local
+
+# Loglar
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+
+# Editör / işletim sistemi
+.DS_Store
+.idea/
+.vscode/
+.claude/settings.local.json

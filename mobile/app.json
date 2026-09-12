@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Poyraz Mobilya",
+    "slug": "poyraz-mobil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "poyraz",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.poyrazmobilya.app"
+    },
+    "android": {
+      "package": "com.poyrazmobilya.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#2E9BD6"
+        }
+      ]
+    ],
+    "experiments": { "typedRoutes": true },
+    "extra": {
+      "eas": { "projectId": "BURAYA-EAS-PROJECT-ID" }
+    }
+  }
+}
