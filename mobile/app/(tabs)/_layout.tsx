@@ -20,7 +20,7 @@ export default function TabsLayout() {
           paddingBottom: 28,
         },
         tabBarLabelStyle: { fontFamily: font.sansBold, fontSize: 9.5 },
-        sceneContainerStyle: { backgroundColor: t.bg },
+        sceneStyle: { backgroundColor: t.bg },
       }}
     >
       <Tabs.Screen

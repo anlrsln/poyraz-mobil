@@ -7,11 +7,6 @@
     "icon": "./assets/icon.png",
     "scheme": "poyraz",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
-    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.poyrazmobilya.app"
@@ -31,11 +26,24 @@
           "icon": "./assets/notification-icon.png",
           "color": "#2E9BD6"
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "backgroundColor": "#FFFFFF",
+          "imageWidth": 210,
+          "resizeMode": "contain"
+        }
       ]
     ],
-    "experiments": { "typedRoutes": true },
+    "experiments": {
+      "typedRoutes": true
+    },
     "extra": {
-      "eas": { "projectId": "BURAYA-EAS-PROJECT-ID" }
+      "eas": {
+        "projectId": "BURAYA-EAS-PROJECT-ID"
+      }
     }
   }
 }
