@@ -238,12 +238,25 @@ eas build --profile development --platform android
 
 `eas.json` hazır: `development` (dev client + APK), `preview`, `production`.
 
-**Android teslim kanalı — devir notunun ilk hâlinde eksikti.** Android'e bildirim
-göndermek işletim sistemi seviyesinde FCM'den geçer; OneSignal gibi servisler de
-altta FCM kullanır, kaçışı yok. Sanity yine tek backend olarak kalır: içerik
-Firebase'de durmaz, müşteri orayı hiç görmez. Gereken tek seferlik iş Firebase
-projesi + `google-services.json` + servis hesabı anahtarının `eas credentials`
-ile yüklenmesi. Adımlar `mobile/README.md` içinde.
+**Android teslim kanalı — devir notunun ilk hâlinde eksikti.**
+
+Bu konu projede iki kez yanlış anlaşıldı, o yüzden net yazıyorum: **FCM ikinci bir
+backend değil, Android'in teslim kanalı.** Kilitli telefonun ekranında bildirim
+çıkarmak işletim sistemi seviyesinde Google Play Services'tan geçer; uygulama hangi
+CMS'i kullanırsa kullansın Android'e bildirim göndermenin başka yolu yoktur
+(OneSignal, Airship gibi servisler de altta FCM'e teslim eder). iOS'ta karşılığı
+APNs'tir ve orada Firebase devreye girmez.
+
+Somut durum: **kodda tek satır Firebase yok**, bağımlılık listesinde de yok
+(`grep -ri firebase mobile/app mobile/lib mobile/components` → boş). İçerik
+Sanity'de durur, Firebase'de hiçbir veri saklanmaz, müşteri o paneli görmez,
+ücretsizdir. Yapılan tek şey Expo'nun uygulama adına teslim yapabilmesi için
+tek seferlik kimlik dosyası yüklemek.
+
+Gereken iş: Firebase projesi + `google-services.json` (gizli değil, commit edilir)
++ servis hesabı özel anahtarı (**gizli, repoya girmez**, `eas credentials` ile
+doğrudan Expo'ya yüklenir — `.gitignore` bu dosyayı engelliyor).
+Adım adım `mobile/README.md` içinde.
 
 iOS için Apple Developer hesabı gerekir; APNs anahtarını Expo yönetir, orada
 Firebase devreye girmez.

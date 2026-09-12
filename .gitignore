@@ -33,3 +33,9 @@ yarn-error.*
 .idea/
 .vscode/
 .claude/settings.local.json
+
+# Firebase servis hesabi ozel anahtari — ASLA commit edilmez
+# (eas credentials ile dogrudan Expo'ya yuklenir; google-services.json ise gizli
+#  degildir ve EAS build icin commit edilmesi gerekir)
+*firebase-adminsdk*.json
+service-account*.json

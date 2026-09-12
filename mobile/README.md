@@ -107,15 +107,30 @@ eas init          # app.json'daki extra.eas.projectId placeholder'ını doldurur
 
 **4. Android teslim kanalı (FCM)**
 
-Android'e bildirim göndermek işletim sistemi seviyesinde FCM'den geçer; Sanity
-yine tek backend olarak kalır, içerik Firebase'de durmaz, müşteri orayı görmez.
+> **Bu ikinci bir backend değil.** Android'de kilitli telefonun ekranında bildirim
+> çıkarmak işletim sistemi seviyesinde Google Play Services'tan geçer; FCM tam olarak
+> budur. Uygulama hangi CMS'i kullanırsa kullansın Android'e bildirim göndermenin
+> başka yolu yoktur (OneSignal, Airship gibi servisler de altta FCM'e teslim eder).
+> iOS'ta karşılığı Apple'ın APNs'i ve orada Firebase devreye girmez.
+>
+> Somut olarak: içerik Sanity'de durur, Firebase'de **hiçbir veri saklanmaz**,
+> müşteri o paneli hiç görmez, ücretsizdir ve **kodda tek satır Firebase yoktur** —
+> bağımlılık listesinde de yoktur. Yapılan tek şey, Expo'nun sizin uygulamanız adına
+> teslim yapabilmesi için bir kimlik dosyası yüklemek. Tek seferlik, ~10 dakika.
 
 1. Firebase Console → yeni proje → Android uygulaması ekle
    (paket adı: `com.poyrazmobilya.app`)
 2. `google-services.json`u indir, proje köküne koy ve `app.json` içine ekle:
    `"android": { "googleServicesFile": "./google-services.json", ... }`
 3. Firebase → Proje ayarları → Hizmet hesapları → yeni özel anahtar (JSON)
-4. `eas credentials` → Android → FCM V1 → anahtarı yükle
+4. `eas credentials` → Android → FCM V1 → 3. adımdaki anahtarı yükle
+
+**İki dosyayı karıştırmayın:**
+
+| Dosya | Gizli mi? | Nereye |
+| --- | --- | --- |
+| `google-services.json` | Hayır — zaten APK'nın içinde dağıtılıyor | Proje köküne, **commit edilir** (EAS build git index'inden okuduğu için gitignore'lanırsa build kırılır) |
+| `…-firebase-adminsdk-….json` (servis hesabı özel anahtarı) | **EVET** | Repoya **asla girmez**; doğrudan `eas credentials` ile Expo'ya yüklenir, orada saklanır |
 
 **5. iOS teslim kanalı (APNs)**
 
