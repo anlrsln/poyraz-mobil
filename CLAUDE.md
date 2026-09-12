@@ -1,7 +1,7 @@
 # Poyraz Mobilya — Mobil Uygulama: Claude Code Devir Notu
 
-Bu dosya, projeyi devralan Claude Code oturumu içindir. Tasarım ve ilk kod üretimi
-tamamlandı; buradan sonrası **çalıştırma, derleme hatalarını giderme ve yayına alma**.
+Bu dosya, projeyi devralan Claude Code oturumu içindir. Tasarım, kod üretimi,
+**SDK yükseltmesi ve derleme aşaması tamamlandı**; kalan iş **cihazda test ve yayına alma**.
 
 ---
 
@@ -23,8 +23,10 @@ sanity/      → poyraz-web reposuna eklenecek yeni şema dosyası
 next-api/    → poyraz-web reposuna eklenecek iki API route
 ```
 
-**Önemli:** Bu kod yazıldı ama **hiç derlenmedi, hiç çalıştırılmadı.** Tip hataları,
-paket sürüm uyuşmazlıkları ve RN'e özgü stil sorunları beklenir. İlk işin bunları gidermek.
+**Durum:** Kod artık kuruldu ve derlendi. `npx tsc --noEmit` 0 hata,
+`npx expo-doctor` 21/21, `npx expo export` başarılı. Expo SDK 51 → **57**
+yükseltildi (RN 0.86, React 19); SDK 51 targetSdk 34 ürettiği için Google Play'e
+yayın yapılamıyordu. Cihazda hiç çalıştırılmadı — sıradaki iş o.
 
 ---
 
@@ -106,41 +108,44 @@ Tüm renkler `lib/theme.tsx` içinde; hiçbir ekranda hardcoded hex olmamalı (v
 
 ---
 
-## 4. İlk görev: çalıştır ve derleme hatalarını gider
+## 4. Yapıldı: kurulum, SDK 57 yükseltmesi, derleme hataları
 
 ```bash
 cd mobile
 npm install
-npx expo install --fix     # sürüm uyuşmazlıklarını Expo SDK'ya göre düzeltir
 npx expo start
 ```
 
-Beklenen sorunlar ve nasıl ele alınacağı:
+Devir notunun ilk hâlinde beklenen 7 sorundan **üçü SDK 57 ile kendiliğinden
+geçersiz kaldı** — kod değiştirilmedi, doğrulanıp olduğu gibi bırakıldı:
 
-1. **`position: 'absolute', inset: 0`** — React Native `inset` kısayolunu desteklemez.
-   `{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }` yap. Birkaç yerde geçiyor
-   (`index.tsx` koleksiyon kartları, `urun/[slug].tsx` ve `video.tsx` play overlay'i).
-2. **`borderStyle: 'dashed'` + `borderRadius`** — Android'de kesikli kenarlık yuvarlak köşeyle
-   birlikte düzgün çizilmez. `koleksiyon/[slug].tsx` sonundaki "Aradığınızı Bulamadınız mı?"
-   kartında düz kenarlığa çevir veya köşeyi kaldır.
-3. **`iletisim.tsx` içinde `require('react-native').Linking`** — tembel require; dosya
-   başındaki import'a taşı.
-4. **`urun/[slug].tsx` çift sorgu** — `collectionSlug` parametresi ilk sorgudan geldiği için
-   `useGroq` iki kez çalışıyor. Tek sorguya indirgemek daha temiz: ürünü çek, `related`'ı
-   `*[_type == "urun" && collection._ref == ^.product.collection._ref]` benzeri tek sorguda
-   çöz ya da ikinci sorguyu `enabled` bayrağıyla koşullu hale getir.
-5. **`@expo-google-fonts/*` paketleri** — yüklü değilse `npx expo install @expo-google-fonts/manrope
-   @expo-google-fonts/playfair-display` çalıştır.
-6. **`tintColor` `expo-image` üzerinde** — sürüme göre desteklenmiyor olabilir; logoyu karanlık
-   temada beyazlatmak için gerekiyor. Çalışmazsa iki ayrı logo dosyası kullan.
-7. **`assets/` boş** — `icon.png` (1024×1024), `splash.png`, `adaptive-icon.png`,
-   `notification-icon.png` (beyaz siluet, 96×96) gerekli. Müşteriden logo dosyalarını iste;
-   geçici olarak `https://www.poyrazmobilya.com/assets/logo.png` kullanılabilir ama
-   `app.json` yerel dosya bekler.
+- `inset: 0` RN 0.86'da resmen destekleniyor (`StyleSheetTypes` içinde CSS
+  kısayolu olarak tanımlı). 5 çağrı yerinde.
+- Kesikli kenarlık + `borderRadius`: Android `BorderDrawable.draw()` artık
+  yuvarlak kenarlarda da dash path effect uyguluyor.
+- `tintColor` expo-image 57'de `ImageProps` içinde mevcut.
 
-Hataları giderirken **tasarımı değiştirme** — ölçüler, renkler ve yerleşim prototipten birebir alındı.
+Yükseltmenin gerektirdiği değişiklikler ve giderilen gerçek hatalar için
+`git log` ve `mobile/README.md`ye bakın. Özet:
 
----
+- `shouldShowAlert` → `shouldShowBanner` + `shouldShowList`
+- bottom-tabs v7: `sceneContainerStyle` → `sceneStyle`
+- `app.json`: üst düzey `splash` anahtarı → `expo-splash-screen` eklentisi
+- `urun/[slug].tsx` çift sorgu → tek sorgu (`^.collection._ref`)
+- `/gizlilik` 404 → `/gizlilik-sozlesmesi`
+- WhatsApp/telefon/e-posta yedek zinciri bağlandı (§5 kuralı)
+- Okunmadı sayacı yalnızca `_id` çekiyor
+- `RefreshControl` gerçek `refreshing` durumu
+- Font yüklenemezse beyaz ekranda kalma
+- Uzak logo URL'i → yerel varlık
+- Font/ikon alt yol import'u: varlık yükü 7,7MB → 2,2MB
+
+`assets/` artık dolu; ikonlar `poyraz-logo.pdf`ten
+`mobile/scripts/gen-assets.py` ile üretiliyor. Müşteri kendi ikonlarını
+gönderirse aynı adlarla değiştirmek yeterli.
+
+Hataları giderirken **tasarım değiştirilmedi** — ölçüler, renkler ve yerleşim
+prototipten birebir.
 
 ## 5. GROQ sorguları — şemayla eşleşme
 
@@ -163,9 +168,11 @@ Kritik noktalar:
 
 ## 6. Push bildirim kurulumu
 
-### 6a. Sanity tarafı (`sanity/duyuru.ts`)
+### 6a. Sanity tarafı — **yapıldı**
 
-`poyraz-web` reposundaki `sanity/schemaTypes/` klasörüne kopyala, `index.ts`'e ekle:
+`poyraz-web` reposunda `feat/push-bildirim` dalında: `duyuru` ve `pushToken`
+repo konvansiyonuna uygun şekilde ayrı dosyalara yazıldı ve `index.ts`'e eklendi.
+Mevcut şemalara dokunulmadı. Dal henüz **merge/deploy edilmedi**.
 
 ```ts
 import { duyuru, pushToken } from './duyuru'
@@ -183,23 +190,21 @@ opsiyonel `product` ve `collection` referansları, `image`, `sendPush` (boolean)
 
 `pushToken`: cihaz token'ları. `_id` token'dan türetilir, böylece mükerrer kayıt imkânsız.
 
-### 6b. Next.js tarafı (`next-api/`)
+### 6b. Next.js tarafı — **yapıldı**
 
-İki route'u `poyraz-web` reposuna kopyala:
+İki route aynı dalda, repo konvansiyonuna (`Response.json`, düz `Request`,
+try/catch) uyarlanarak eklendi. `next build` ve `eslint` temiz:
 
 - `app/api/push/route.ts` — webhook'u alır, token'ları okur, Expo Push API'ye 100'erlik
   gruplar hâlinde gönderir, sonra `sentAt` yazar.
 - `app/api/push-token/route.ts` — mobil uygulamadan gelen token'ı `createOrReplace` ile kaydeder.
 
-Her iki dosya `@/lib/sanity/client` içinden `sanityWriteClient` import ediyor.
-**Repodaki gerçek export adını kontrol et** — farklıysa import'u düzelt.
+Her iki dosya `@/lib/sanity/client` içinden `sanityWriteClient` import ediyor —
+export adı repoda doğrulandı, düzeltme gerekmedi.
 
-Vercel env değişkenleri:
-
-| Değişken | Not |
-| --- | --- |
-| `SANITY_API_WRITE_TOKEN` | muhtemelen zaten var (Editor yetkili) |
-| `SANITY_WEBHOOK_SECRET` | yeni; rastgele uzun dizi, webhook başlığıyla aynı |
+Vercel env değişkenleri: **ikisi de zaten var.** `SANITY_WEBHOOK_SECRET`
+`/api/revalidate` tarafından kullanılıyor; webhook'un `x-webhook-secret`
+başlığında aynı değeri göndermesi yeterli. Yeni değişken gerekmiyor.
 
 ### 6c. Sanity webhook
 
@@ -231,8 +236,17 @@ eas build --profile development --platform android
 `mobile/app.json` içinde `extra.eas.projectId` şu an `"BURAYA-EAS-PROJECT-ID"` placeholder'ı.
 `eas build:configure` bunu otomatik doldurur; doldurmazsa elle yaz.
 
-iOS için Apple Developer hesabı gerekir. APNs anahtarını Expo yönetir, ayrı FCM kurulumu
-gerekmez — bu yüzden Expo Push seçildi (OneSignal/FCM yerine).
+`eas.json` hazır: `development` (dev client + APK), `preview`, `production`.
+
+**Android teslim kanalı — devir notunun ilk hâlinde eksikti.** Android'e bildirim
+göndermek işletim sistemi seviyesinde FCM'den geçer; OneSignal gibi servisler de
+altta FCM kullanır, kaçışı yok. Sanity yine tek backend olarak kalır: içerik
+Firebase'de durmaz, müşteri orayı hiç görmez. Gereken tek seferlik iş Firebase
+projesi + `google-services.json` + servis hesabı anahtarının `eas credentials`
+ile yüklenmesi. Adımlar `mobile/README.md` içinde.
+
+iOS için Apple Developer hesabı gerekir; APNs anahtarını Expo yönetir, orada
+Firebase devreye girmez.
 
 ---
 
