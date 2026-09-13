@@ -276,6 +276,27 @@ Firebase devreye girmez.
 
 ## 7. Test senaryosu (bitti sayılması için hepsi geçmeli)
 
+**Şu ana kadar geçenler** (iOS simülatörü + yerel Next dev sunucusu, 13 Eylül):
+
+- 3, 4, 9 numaralı maddeler: ana sayfa gerçek Sanity verisiyle çalışıyor
+  (6 öne çıkan ürün, koleksiyonlar), karanlık mod kapatıp açtıktan sonra
+  hatırlandı (AsyncStorage'da `poyraz.theme`).
+- Studio'da oluşturulan duyuru uygulamada göründü: zil rozeti "1", bildirim
+  merkezinde "YENİ ÜRÜN" kartı, okunmadı noktası ve "Ürüne git" bağlantısı.
+- `/api/push` yerel dev sunucusunda webhook isteği birebir taklit edilerek
+  test edildi: yanlış secret → 401, secret yok → 401, `_id` yok → 400,
+  kayıtlı cihaz yok → skipped, cihaz varken Expo Push API'ye gönderim
+  (`sent: 1`), `sentAt` yazımı ve **8. madde**: aynı duyuru tekrar
+  yayınlandığında "Zaten gönderildi".
+- `/api/push-token`: geçersiz token → 400, geçerli token → kayıt oluştu.
+
+**Kalanlar:** 1, 2, 5, 6, 7 numaralı maddeler gerçek cihaz gerektiriyor
+(simülatör push token almaz — `Device.isDevice` false; iOS simülatörüne APNs
+teslimi yapılmaz; WhatsApp/telefon uygulaması yok). 10 numaralı madde
+simülatörde uçak modu taklidi olmadığı için cihazda denenecek.
+
+
+
 1. Uygulama açılır, splash 2,3 sn görünür, izin ekranı gelir.
 2. "Bildirimlere İzin Ver" → izin verilir, token `pushToken` dokümanı olarak Sanity'ye düşer.
 3. Ana sayfada gerçek ürünler ve koleksiyonlar görünür (Sanity'den).
@@ -297,6 +318,13 @@ Firebase devreye girmez.
 - Sanity'ye yeni doküman tipi ekleme — `duyuru` ve `pushToken` dışında gerek yok.
 - Write token'ı mobil uygulamaya koyma.
 - `sanity/schemaTypes/*` içindeki mevcut şemaları değiştirme; site onlara bağlı.
+- **`pushToken` dokümanlarının `_id` biçimini değiştirme.** `'pushToken.' + token`
+  biçimindeki noktalı önek, Sanity'nin path önekli dokümanları yetkisiz okumadan
+  saklaması sayesinde cihaz token'larını dışarıya kapatıyor. Testte doğrulandı:
+  noktalı `_id` yetkisiz okumada görünmüyor, düz `_id` görünüyor. Dataset
+  public-read olduğu ve Expo Push API gönderim için kimlik doğrulaması istemediği
+  için önek kaldırılırsa üçüncü biri token'ları toplayıp kullanıcılara bildirim
+  gönderebilir.
 
 ---
 
