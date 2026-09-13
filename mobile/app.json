@@ -41,9 +41,11 @@
       "typedRoutes": true
     },
     "extra": {
+      "router": {},
       "eas": {
-        "projectId": "BURAYA-EAS-PROJECT-ID"
+        "projectId": "404bcc57-7e02-42f2-8fab-fe601f55bee0"
       }
-    }
+    },
+    "owner": "aarslan223"
   }
 }
