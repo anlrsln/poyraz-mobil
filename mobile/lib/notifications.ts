@@ -30,8 +30,6 @@ const READ_KEY = 'poyraz.readDuyurular'
 
 /** İzin ister, Expo push token'ını alır ve sunucuya kaydeder. */
 export async function registerForPush(): Promise<string | null> {
-  if (!Device.isDevice) return null
-
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'Duyurular',
@@ -45,6 +43,11 @@ export async function registerForPush(): Promise<string | null> {
   let status = existing.status
   if (status !== 'granted') status = (await Notifications.requestPermissionsAsync()).status
   if (status !== 'granted') return null
+
+  // İzin isteği simülatör/emülatörde de çalışır ve çalışması gerekir; yalnızca
+  // uzak push token'ı fiziksel cihaz ister. Bu kontrol en başta olduğunda
+  // simülatörde izin hiç sorulmuyor ve bildirim testi yapılamıyordu.
+  if (!Device.isDevice) return null
 
   const projectId =
     (Constants.expoConfig?.extra as any)?.eas?.projectId ?? (Constants as any).easConfig?.projectId
