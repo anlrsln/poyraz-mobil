@@ -190,15 +190,26 @@ npx expo start --dev-client
 Sonra sahte bildirim gönderip dokunun:
 
 ```bash
-xcrun simctl push booted com.poyrazmobilya.app payload.json
+xcrun simctl push booted com.poyrazmobilya.app scripts/test-push-payload.json
 ```
 
+Yük biçimi önemli: uzak bildirimlerde `expo-notifications` özel veriyi
+**`userInfo["body"]`** içinden okuyor (`NotificationRecords.swift`,
+`serializedNotificationData`), üst düzey anahtarlardan değil. Yani
+yönlendirme alanları `body` nesnesinin içine konmalı — üst düzeye konursa
+bildirim görünür ama dokununca ana sayfa açılır:
+
 ```json
-{ "aps": { "alert": { "title": "Yeni ürün: HAZAR",
-                      "body": "Koleksiyonumuza yeni eklenen modeli inceleyin" },
-           "sound": "default" },
-  "productSlug": "hazar", "kind": "urun" }
+{
+  "aps": { "alert": { "title": "Yeni ürün: HAZAR", "body": "…" }, "sound": "default" },
+  "body": { "kind": "urun", "productSlug": "hazar", "collectionSlug": null }
+}
 ```
+
+(`aps.alert.body` ekranda görünen metin; üst düzey `body` Expo'nun veri
+zarfı — aynı ada sahip olmaları kafa karıştırıcı ama ikisi ayrı şey.)
+Expo Push API gerçek gönderimde `data` alanını bu zarfa kendisi çeviriyor,
+yani `/api/push` tarafında ek bir şey yapmak gerekmiyor.
 
 > **CocoaPods tuzağı:** `pod install` UTF-8 yerel ayarı olmadan
 > `Encoding::CompatibilityError` ile patlıyor. Gerekirse:

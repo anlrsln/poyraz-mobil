@@ -1,0 +1,15 @@
+{
+  "aps": {
+    "alert": {
+      "title": "Yeni ürün: HAZAR",
+      "body": "Koleksiyonumuza yeni eklenen modeli incelemek için dokunun."
+    },
+    "sound": "default"
+  },
+  "body": {
+    "duyuruId": "test-simulator",
+    "kind": "urun",
+    "productSlug": "hazar",
+    "collectionSlug": null
+  }
+}
