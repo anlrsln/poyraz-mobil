@@ -148,6 +148,62 @@ eas build --profile development --platform android
 
 Çıkan APK'yı gerçek cihaza kurun (emülatörde push çalışmaz).
 
+## Simülatörde test
+
+Expo Go ile arayüzün tamamı ve Sanity verisi test edilebilir (yukarıdaki
+"Çalıştırma"). Derin bağlantıyla ekranlara doğrudan gidilebilir:
+
+```bash
+xcrun simctl openurl booted "exp://<ip>:8081/--/bildirimler"
+xcrun simctl openurl booted "exp://<ip>:8081/--/urun/hazar"
+```
+
+**Simülatörde çalışmayanlar:** push token kaydı (`Device.isDevice` false),
+gerçek push teslimi (iOS simülatörüne APNs gelmez), `tel:`/`mailto:`,
+WhatsApp uygulaması.
+
+### Bildirimin ekranda görünmesi — dev build gerekiyor
+
+Bildirim banner'ını ve "dokununca doğru ürüne gitme" davranışını simülatörde
+görmek için development build şart (Expo Go'nun bundle id'si farklı).
+
+**Yerel build bu makinede çalışmıyor:**
+
+```
+package 'apple' is using Swift tools version 6.2.0 but the installed version is 6.1.0
+```
+
+Xcode 16.4 Swift 6.1 ile geliyor, Expo SDK 57 Swift 6.2 (Xcode 26) istiyor.
+Yerel `npx expo run:ios` için Xcode'u güncellemek gerekiyor.
+
+**Bulut alternatifi (Xcode güncellemeden):** simülatör build'i imza
+gerektirmediği için Apple Developer hesabı da gerekmez.
+
+```bash
+eas login
+eas build -p ios --profile development-simulator
+# cikan .tar.gz indirilir, acilir ve kurulur:
+xcrun simctl install booted PoyrazMobilya.app
+npx expo start --dev-client
+```
+
+Sonra sahte bildirim gönderip dokunun:
+
+```bash
+xcrun simctl push booted com.poyrazmobilya.app payload.json
+```
+
+```json
+{ "aps": { "alert": { "title": "Yeni ürün: HAZAR",
+                      "body": "Koleksiyonumuza yeni eklenen modeli inceleyin" },
+           "sound": "default" },
+  "productSlug": "hazar", "kind": "urun" }
+```
+
+> **CocoaPods tuzağı:** `pod install` UTF-8 yerel ayarı olmadan
+> `Encoding::CompatibilityError` ile patlıyor. Gerekirse:
+> `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pod install`
+
 ## Test senaryosu
 
 Bitti sayılması için hepsi geçmeli:
