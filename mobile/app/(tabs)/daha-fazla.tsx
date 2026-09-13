@@ -29,9 +29,12 @@ export default function DahaFazla() {
 
   const onPushToggle = async (v: boolean) => {
     if (v) {
-      const token = await registerForPush()
-      setPushOn(!!token)
-      if (!token) Linking.openSettings()
+      await registerForPush()
+      // Anahtar izni yansıtmalı, token'ı değil: token ağ hatasında veya
+      // simülatörde alınamaz ama izin verilmiş olabilir.
+      const granted = await hasPushPermission()
+      setPushOn(granted)
+      if (!granted) Linking.openSettings()
     } else {
       Linking.openSettings() // iOS/Android'de izin kapatma sistem ayarlarından yapılır
     }
