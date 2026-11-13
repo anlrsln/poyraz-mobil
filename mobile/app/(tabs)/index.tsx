@@ -9,6 +9,8 @@ import { homeQuery, sized } from '@/lib/sanity'
 import { AppHeader } from '@/components/AppHeader'
 import { SectionTitle, Loader, ErrorState, ProductCard, ProductCardData } from '@/components/ui'
 import { call, PHONE_FALLBACK } from '@/lib/links'
+import { StoryRail } from '@/components/StoryRail'
+import type { Story } from '@/lib/stories'
 
 type HomeData = {
   collections: { _id: string; name: string; slug: string; description?: string; cardImage?: string; heroImage?: string }[]
@@ -19,6 +21,7 @@ type HomeData = {
     featuredProducts?: ProductCardData[]
   }
   settings?: { whatsappNumber?: string; contactPhone?: string; contactEmail?: string }
+  stories?: Story[]
 }
 
 const STATS = [
@@ -60,6 +63,8 @@ export default function Home() {
           showsVerticalScrollIndicator={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={t.accent} />}
         >
+          <StoryRail stories={data?.stories ?? []} />
+
           {/* Öne çıkanlar karuseli */}
           <View style={{ paddingHorizontal: 16, paddingTop: 18, flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
             <SectionTitle kicker="KOLEKSİYONDAN" title="Öne Çıkan Ürünler" />

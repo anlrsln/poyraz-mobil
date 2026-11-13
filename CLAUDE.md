@@ -314,8 +314,10 @@ simülatörde uçak modu taklidi olmadığı için cihazda denenecek.
 ## 8. Yapma
 
 - Sitede olmayan özellik ekleme (fiyat, sepet, üyelik, favori, stok adedi).
+  **Bilinçli istisna:** ana sayfa story'leri (yalnızca uygulamada; tasarım
+  `docs/superpowers/specs/2026-11-13-story-design.md`).
 - Tasarımı "iyileştirme" — renkler, boşluklar ve tipografi siteden birebir alındı.
-- Sanity'ye yeni doküman tipi ekleme — `duyuru` ve `pushToken` dışında gerek yok.
+- Sanity'ye yeni doküman tipi ekleme — `duyuru`, `pushToken` ve `story` dışında gerek yok.
 - Write token'ı mobil uygulamaya koyma.
 - `sanity/schemaTypes/*` içindeki mevcut şemaları değiştirme; site onlara bağlı.
 - **`pushToken` dokümanlarının `_id` biçimini değiştirme.** `'pushToken.' + token`

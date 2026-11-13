@@ -29,11 +29,12 @@ Sitenin sayfa, sorgu ve API'lerine dokunulmaz. Yalnızca Studio:
 1. `sanity/schemaTypes/story.ts` — yeni tip:
    - `title` string, zorunlu, max 40 — yuvarlağın altındaki ad
    - `cover` image, opsiyonel — boşsa ilk görsel kare kullanılır
-   - `items` array, min 1 max 10 — üyeleri:
+   - `items` array, max 10; ürün seçilmediyse en az 1 kare zorunlu — üyeleri:
      - `image` (hotspot)
      - `file` adı `video`, `accept: 'video/mp4,video/quicktime'`; açıklama:
        "≤15 sn, 720p, mümkünse <10 MB — videolar sıkıştırılmadan sunulur"
-   - `product` → `urun` referansı, opsiyonel
+   - `product` → `urun` referansı, opsiyonel. Seçilirse ürünün galerisindeki görseller
+     yüklenen karelerin arkasına otomatik eklenir (toplam ≤10); kapak da yoksa ürünün ilk görseli.
    - `collection` → `koleksiyon` referansı, opsiyonel ("ürün seçilmediyse kullanılır")
    - `publishedAt` datetime, zorunlu, `initialValue: now`
    - `preview`: başlık + kapak; alt satırda "Yayında · N gün kaldı" / "Süresi doldu" /

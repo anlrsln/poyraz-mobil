@@ -37,6 +37,26 @@ export const collectionsQuery = `*[_type == "koleksiyon"] | order(order asc) {
   "heroImage": heroImage.asset->url
 }`
 
+/** Yayında olan story'ler: publishedAt'ten itibaren 7 gün. Yalnızca uygulamada gösterilir. */
+export const storiesQuery = `*[_type == "story"
+  && dateTime(publishedAt) <= dateTime(now())
+  && dateTime(publishedAt) > dateTime(now()) - 60*60*24*7
+] | order(publishedAt desc) {
+  _id, title, publishedAt,
+  "cover": coalesce(
+    cover.asset->url,
+    items[_type == "image"][0].asset->url,
+    product->mediaGallery[type == "image"][0].imageAsset.asset->url
+  ),
+  // Yüklenen kareler önce, seçilen ürünün görselleri arkasına; toplam en fazla 10.
+  "items": (
+    coalesce(items[]{ _key, _type, "url": asset->url }, []) +
+    coalesce(product->mediaGallery[type == "image"]{ "_key": "urun-" + _key, "_type": "image", "url": imageAsset.asset->url }, [])
+  )[0...10],
+  "productSlug": product->slug.current,
+  "collectionSlug": collection->slug.current
+}`
+
 /** Ana Sayfa: koleksiyonlar + öne çıkanlar + yorumlar + video galeri + ayarlar */
 export const homeQuery = `{
   "collections": ${collectionsQuery},
@@ -48,7 +68,8 @@ export const homeQuery = `{
   },
   "settings": *[_type == "siteAyarlari"][0] {
     whatsappNumber, contactPhone, contactEmail
-  }
+  },
+  "stories": ${storiesQuery}
 }`
 
 /** Koleksiyon detay + içindeki ürünler */

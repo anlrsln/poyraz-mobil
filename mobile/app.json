@@ -35,7 +35,8 @@
           "imageWidth": 135,
           "resizeMode": "contain"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

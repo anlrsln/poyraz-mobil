@@ -15,6 +15,9 @@ export const light = {
   whatsapp: '#25D366',
   danger: '#E0483B',
   onNavy: '#FFFFFF',
+  /** Story izleyici: medya ekranı, iki temada da aynı */
+  storyBg: '#000000',
+  storyTrack: 'rgba(255,255,255,0.35)',
   logoTint: undefined as string | undefined,
 }
 

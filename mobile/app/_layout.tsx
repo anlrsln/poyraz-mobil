@@ -80,6 +80,10 @@ function Root() {
         <Stack.Screen name="kurumsal" />
         <Stack.Screen name="bayiler" />
         <Stack.Screen name="video" />
+        <Stack.Screen
+          name="story/[id]"
+          options={{ presentation: 'fullScreenModal', animation: 'fade', contentStyle: { backgroundColor: t.storyBg } }}
+        />
       </Stack>
     </>
   )
